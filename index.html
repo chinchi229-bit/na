@@ -1,0 +1,49 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>Control cuarto</title>
+<style>
+  body { font-family: sans-serif; text-align: center; background: #111; color: #fff; padding-top: 40px; }
+  button { display: block; width: 80%; max-width: 320px; margin: 20px auto; padding: 25px;
+           font-size: 22px; border: none; border-radius: 16px; color: #fff; background: #555; }
+  #cuarto.on { background: #e8a317; }
+  #nav.on    { background: #c0392b; }
+</style>
+</head>
+<body>
+  <h1>Mi cuarto</h1>
+  <button id="cuarto" onclick="toggleCuarto()">Luz cuarto</button>
+  <button id="nav" onclick="toggleNav()">Modo navideño</button>
+
+<script>
+  // Pon aquí la IP que te da el Monitor Serial
+  const ESP32 = "http://192.168.0.19";
+
+  // Pon aquí el link de tu canción/playlist "flamazo navideño"
+  const SPOTIFY = "https://open.spotify.com/playlist/3mzmMhHd29bwzGDHsodIkX?si=0f83681443fc42a4";
+
+  function pintar(e) {
+    document.getElementById("cuarto").className = e.cuarto ? "on" : "";
+    document.getElementById("nav").className    = e.nav ? "on" : "";
+  }
+
+  function estado() {
+    fetch(ESP32 + "/estado").then(r => r.json()).then(pintar);
+  }
+
+  function toggleCuarto() {
+    fetch(ESP32 + "/cuarto").then(r => r.json()).then(pintar);
+  }
+
+  function toggleNav() {
+    const activando = !document.getElementById("nav").classList.contains("on");
+    if (activando) window.open(SPOTIFY, "_blank");   // abre Spotify
+    fetch(ESP32 + "/navidad").then(r => r.json()).then(pintar);
+  }
+
+  estado();
+</script>
+</body>
+</html>
